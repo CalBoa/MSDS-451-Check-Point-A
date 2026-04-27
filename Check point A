@@ -1,0 +1,91 @@
+Introduction
+
+Purpose and motivation
+This project designs an actively managed, multi-asset ETF named “QuantaFlex ETF” that uses a rules-based, quantitative framework to harvest alpha across equities, fixed income, and commodities while controlling risk through systematic hedging. The goal is to provide retail and institutional investors with a transparent, disciplined, rule-based methodology and daily liquidity typical of ETFs.
+
+Investment problem or opportunity
+There is an opportunity to deliver an openly accessible, rules-based actively managed ETF that can be traded like a stock yet benefits from disciplined, repeatable decision rules. This combines the transparency of an ETF with the potential for alpha generation through systematic trading signals and risk management.
+
+Investment philosophy (high level)
+QuantaFlex employs a hybrid, systematic, rules-based approach that blends technical trend-following signals for dynamic asset allocation and timing with fundamentals-inspired screens (quality, profitability, leverage) reweighted through momentum to avoid value traps. It includes dynamic hedging and risk targeting to limit drawdowns. The portfolio is diversified across stocks, investment-grade bonds, equities indices, and commodity/soft-asset proxies to capture broad risk premia while maintaining liquidity.
+
+Target users/investors and value proposition
+Target users include retail investors seeking diversified, transparent exposure to a multi-asset portfolio; financial advisors seeking an all-in-one, rules-based ETF; and institutional investors needing liquid exposure with clear risk controls. The value proposition centers on simplicity and accessibility, transparent rules and governance, 24/7 liquidity, and built-in risk management designed to smooth drawdowns across market regimes.
+
+Literature Review
+The following themes synthesize the literature to justify the design choices for QuantaFlex. Inline Chicago-style citations are placeholders to be replaced with course-required references.
+
+Theme: Investment Philosophies
+Hybrid approaches that combine fundamentals with momentum tend to improve robustness and reduce drawdowns relative to purely momentum or purely value strategies. This justifies a hybrid signal framework over a one-dimensional approach (Goldfarb and Iyengar 2003; Moskowitz, Ooi, and Pedersen 2012).
+
+Theme: Portfolio Optimization and Construction
+Mean-variance optimization provides a foundational framework for diversification, but real-world constraints such as estimation error, transaction costs, and liquidity risk motivate robust optimization and Bayesian approaches. These methods inform diversification targets across asset classes and within classes (Markowitz 1952, 1956; Goldfarb and Iyengar 2003; Grinold and Kahn 2023).
+
+Theme: Risk Management and Hedging
+Trend-following and hedging techniques can reduce downside risk and improve tail resilience, particularly when combined with volatility targeting and drawdown controls. Dynamic hedging practices help protect portfolios during market stress (Greyserman, Kaminski, and Moskowitz 2014; Covel 2009, 2011, 2017).
+
+Theme: Trading Rules and Algorithmic Execution
+Rule-based strategies require rigorous backtesting, walk-forward validation, and careful handling of slippage to produce credible performance estimates for an ETF. These considerations directly influence the design of explicit buy/sell rules that are implementable in software (Patterson 2011, 2013; Wilmott and Orrell 2017).
+
+Theme: Market Structure and ETF Mechanics
+ETF creation/redemption mechanics, liquidity, tracking error, and fee structures influence how actively managed signals translate into tradable ETF exposures. Awareness of these mechanics ensures the design aligns with investor expectations for liquidity and cost efficiency (Barras, Hanson, and Koski 2008; Grinold and Kahn 2023).
+
+Theme: Data Science and Quant Methods in Finance
+A range of methods—time-series models (ARIMA, GARCH), momentum/noise models, and machine learning—can generate signals, with regime detection becoming increasingly important for adaptive rules (Tsay 2010; Sirignano and Cont 2019).
+
+Why this supports the philosophy
+The literature supports a hybrid, rule-based approach with explicit risk controls and hedging, aligning with the QuantaFlex ETF design and providing a credible path from concept to implementation (Goldfarb and Iyengar 2003; Greyserman, Kaminski, and Moskowitz 2014; Markowitz 1952, 1956).
+
+Methods
+
+Investment philosophy and rules
+Asset universe (initial): NVDA as the US large-cap equity proxy, US investment-grade bonds (AGG proxy), broad global equities (ACWI proxies), commodity proxies (DBC, GLD proxies), plus a cash-equivalent reserve. Explicit buy/sell rules (programmable):
+Signal 1: Trend-following for each asset class
+  If 20-day moving average > 60-day moving average and 20-day RSI > 50, allocate to 1.0× target for that asset class; if not, reduce exposure by 0.5× steps toward cash.
+Signal 2: Momentum/quality tilt across asset classes
+  If trailing 3-month momentum > threshold and earnings quality metrics improving, overweight the asset class by 0.25×, capped at 1.0× overweight.
+Signal 3: Volatility-aware sizing
+  If realized volatility > 15%, scale back exposure by 0.2×; if below 10%, expand modestly by 0.1×.
+
+Position sizing
+Risk-based, fixed fractional approach; max 25% exposure to any single asset class; max 2× leverage if governance approves. Strategy type: Hybrid with hedging overlay. Portfolio structure: Four main asset classes with a 5–10% liquidity buffer in Treasuries or cash equivalents. Trading approach: Active, target turnover 40–60% annually, with hedges for downside protection (e.g., put options on equity exposure if volatility spikes beyond a threshold). Automation potential: Rule engine, backtesting pipeline, live trading integration; data ingestion for price, macro indicators, and fundamentals; governance checks embedded.
+
+Portfolio structure and diversification
+Diversification targets: 25–30% equities (including NVDA exposure), 40–50% fixed income, 10–15% commodities, 5–10% cash; quarterly rebalancing with tolerance bands.
+
+Trading approach and risk controls
+Turnover target: 40–60% annually (regime-adjustable). Hedging strategies: systematic downside hedges, drawdown limits, and portfolio-level stop-loss rules.
+
+Automation and implementation plan
+Modularity: data ingestion, signal computation, portfolio construction, risk checks, execution, and monitoring. Data sources: real-time price feeds, fundamentals, macro indicators. Backtesting framework: walk-forward testing, out-of-sample validation, and consideration of transaction costs and tracking error.
+
+Results
+
+Key insights from the literature that influenced your strategy design
+Hybrid strategies balance robustness and alpha generation; hedging improves downside protection; explicit risk controls reduce drawdowns in regime shifts; ETF mechanics impose liquidity and tracking considerations shaping signal design.
+
+Initial observations about chosen markets or asset classes
+NVDA-led equities offer strong momentum in tech-driven regimes; fixed income exposure provides ballast; commodities offer diversification but hedging costs can be material; cash/Treasury reserves provide liquidity during volatility spikes.
+
+Refinements to investment philosophy based on research
+Emphasize hedged, diversified exposure over pure long-only equity tilts; adopt regime-aware sizing to mitigate over-trading; prioritize transparent, auditable rules to support ETF governance.
+
+Conclusions
+
+What you have learned and feasibility assessment
+A quantitative, rules-based, hybrid ETF concept is feasible and aligns with ETF market demand for accessible, transparent active management. Key risks include data quality, model risk, backtest overfitting, regulatory constraints around active ETFs, and ensuring credible tracking to the ETF price.
+
+Open questions and next steps for checkpoints B and beyond
+Data availability and reliability for fundamentals and macro signals; decisions on leverage and the extent of hedging; how to measure and control tracking error; governance structure for rule updates.
+
+Transition plan to Checkpoint B
+Finalize asset universe, lock in exact signals with precise numeric thresholds, set up a data pipeline and backtest environment, draft the complete governance and risk framework, and prepare an initial prototype backtest report with performance metrics.
+
+References
+
+Goldfarb, A., and Iyengar, S. 2003. “Robust Optimization.” In Handbooks in Operations Research and Management Science, vol. 8: Optimization.
+Markowitz, H. 1952, 1956. “Portfolio Selection.” Journal of Finance.
+Sharpe, W. F. 1963, 1994. “Portfolio Theory”; “Capital Asset Prices: A Theory of Market Equilibrium.” Journal of Finance.
+Greyserman, L., Kaminski, M., and Moskowitz, T. 2014. Trend Following.
+Patterson, S. 2011, 2013. “Algorithmic Trading.”
+Zuckerman, E. 2019. FD Finance.

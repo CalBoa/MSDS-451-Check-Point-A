@@ -1,1 +1,128 @@
+# QuantaFlex ETF - Checkpoint B
+
+This repository contains the **Checkpoint B** work for the QuantaFlex ETF term project. The goal of this checkpoint is to move from the conceptual design in Checkpoint A to the data preparation stage by identifying financial securities, collecting historical market data, computing returns, and building an initial baseline portfolio for testing.
+
+## Project Overview
+
+QuantaFlex ETF is a proposed **rules-based, actively managed multi-asset ETF** that allocates across:
+
+- **U.S. growth equity**: NVDA
+- **U.S. investment-grade bonds**: AGG
+- **Global equities**: ACWI
+- **Gold**: GLD
+- **Broad commodities**: DBC
+- **Cash / Treasury-bill reserve**: BIL
+
+The market benchmark used for comparison is:
+
+- **SPY**: S&P 500 ETF
+
+The broader long-term goal of the project is to develop a transparent and systematic ETF strategy that can later incorporate trend-following, momentum, and volatility-based allocation rules.
+
+## Checkpoint B Objectives
+
+This checkpoint focuses on:
+
+- selecting securities for the proposed ETF,
+- identifying public historical data sources,
+- defining the time period and frequency of analysis,
+- computing daily log returns,
+- creating a baseline long-only buy-and-hold portfolio,
+- comparing the portfolio to the market benchmark,
+- and performing an initial Monte Carlo simulation.
+
+## Data Source
+
+Historical market data were collected from **Yahoo Finance** using the Python package `yfinance`.
+
+- **Data frequency**: Daily
+- **Main sample period**: 2008–2024
+- **Price field used**: Adjusted close
+
+The 2008–2024 period was selected because all chosen ETF proxies share usable overlapping data over this range, and it includes multiple important market regimes such as the global financial crisis, post-crisis recovery, COVID-19, and the 2022 inflation shock.
+
+## Method Summary
+
+The notebook performs the following steps:
+
+- downloads adjusted daily prices for all selected assets,
+- computes daily log returns,
+- produces summary statistics,
+- plots normalized price paths,
+- builds an equal-weight long-only buy-and-hold portfolio,
+- compares portfolio growth against SPY,
+- computes performance metrics,
+- and runs a basic Monte Carlo simulation.
+
+The daily log return formula used is:
+
+```text
+r_t = 100 × [ln(P_t) − ln(P_(t−1))]
+```
+
+where `P_t` is the adjusted closing price on day `t`.
+
+## Initial Results
+
+The equal-weight QuantaFlex buy-and-hold portfolio produced these approximate results:
+
+| Metric | QuantaFlex Buy-and-Hold | SPY |
+|---|---:|---:|
+| Annualized Return (%) | 8.03 | 10.85 |
+| Annualized Volatility (%) | 12.92 | 19.95 |
+| Sharpe Ratio | 0.62 | 0.54 |
+| Max Drawdown (%) | -39.54 | -51.48 |
+| Alpha (%) | 2.64 | — |
+| Beta | 0.50 | — |
+
+These results suggest that the portfolio had **lower return than SPY**, but also **lower volatility, lower drawdown, and a slightly better Sharpe ratio**. This supports the diversification rationale behind the QuantaFlex concept.
+
+The Monte Carlo simulation also produced a positive average 5-year ending portfolio value:
+
+- **Mean ending value**: ~1.55
+- **Median ending value**: ~1.50
+
+starting from an initial value of 1.00.
+
+## Repository Contents
+
+- **`Checkpoint_B_Notebook.ipynb`**: Jupyter notebook with data collection, return calculations, charts, performance metrics, and Monte Carlo simulation
+- **`README.md`**: overview of Checkpoint B
+- **`quantaflex_prices.csv`**: cleaned adjusted price data
+- **`quantaflex_log_returns.csv`**: daily log returns
+- **`quantaflex_summary_stats.csv`**: summary statistics for selected assets
+- **`quantaflex_portfolio_metrics.csv`**: baseline portfolio performance metrics
+
+## Key Takeaways
+
+- Public daily data are available for the selected ETF proxies and benchmark.
+- The 2008–2024 period is a practical common sample for testing.
+- A diversified multi-asset buy-and-hold portfolio is feasible and shows lower risk than SPY.
+- The project is ready to move from data preparation to active strategy testing.
+
+## Next Steps
+
+The next stage of the project will:
+
+- implement QuantaFlex’s active allocation rules,
+- test moving average, momentum, and volatility signals,
+- conduct walk-forward backtesting,
+- perform sensitivity analysis,
+- and refine Monte Carlo simulation methods.
+
+## References
+
+Goldfarb, Donald, and Garud Iyengar. 2003. “Robust Portfolio Selection Problems.” *Mathematics of Operations Research* 28 (1): 1–38.
+
+Jegadeesh, Narasimhan, and Sheridan Titman. 1993. “Returns to Buying Winners and Selling Losers: Implications for Stock Market Efficiency.” *Journal of Finance* 48 (1): 65–91.
+
+López de Prado, Marcos. 2018. *Advances in Financial Machine Learning*. Hoboken, NJ: Wiley.
+
+Markowitz, Harry. 1952. “Portfolio Selection.” *Journal of Finance* 7 (1): 77–91.
+
+Moskowitz, Tobias J., Yao Hua Ooi, and Lasse Heje Pedersen. 2012. “Time Series Momentum.” *Journal of Financial Economics* 104 (2): 228–250.
+
+Sharpe, William F. 1964. “Capital Asset Prices: A Theory of Market Equilibrium under Conditions of Risk.” *Journal of Finance* 19 (3): 425–442.
+
+Yahoo Finance. n.d. “Historical Market Data.” Accessed May 19, 2026. <https://finance.yahoo.com/>
 
